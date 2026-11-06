@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>苗栗燈會｜4G 站台建設進度管控</title>
+  <meta name="description" content="苗栗燈會 4G 站台建設進度儀表板：彙整各營運中心租賃、P1–P4 工程與開台完成率，可即時編修、匯出資料。" />
+  <meta name="color-scheme" content="light" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23a4222a'/%3E%3Cellipse cx='32' cy='34' rx='14' ry='17' fill='none' stroke='%23f0c96a' stroke-width='4'/%3E%3Cpath d='M32 12v5M32 51v5M26 18h12M26 50h12' stroke='%23f0c96a' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">跳至主要內容</a>
+  <div class="ambient" aria-hidden="true"></div>
+
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 64 64" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+            <path d="M32 9v6" />
+            <path d="M24 15h16" />
+            <path d="M23 17c-7 5-9 12-9 18 0 9 8 15 18 15s18-6 18-15c0-6-2-13-9-18" />
+            <path d="M25 21v24M32 18v28M39 21v24" opacity=".55" />
+            <path d="M25 50h14" />
+            <path d="M32 53v5" />
+          </svg>
+        </div>
+        <div class="brand-text">
+          <p class="eyebrow"><span class="pulse" aria-hidden="true"></span> MIAOLI LANTERN · NETWORK BUILD</p>
+          <h1>4G 站台建設進度管控</h1>
+          <p class="subtitle">苗栗燈會網路建置 · 各營運中心即時進度儀表板</p>
+        </div>
+      </div>
+
+      <div class="hero-side">
+        <div class="hero-meta">
+          <span>資料年度 <strong id="metaYear">114</strong> 年</span>
+          <span class="divider" aria-hidden="true"></span>
+          <span>最後更新 <strong id="metaUpdated">—</strong></span>
+        </div>
+        <div class="hero-actions">
+          <button class="btn btn-ghost" id="exportBtn" type="button">匯出 JSON</button>
+          <button class="btn btn-ghost" id="printBtn" type="button">列印 / PDF</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="page">
+    <section class="kpi-grid" id="kpiGrid" aria-label="重點指標"></section>
+
+    <section class="panel overview" aria-labelledby="overviewTitle">
+      <div class="panel-head">
+        <div>
+          <h2 id="overviewTitle">整體完成度</h2>
+          <p>依中心資料統計總表計算；合計列為各營運中心加總。</p>
+        </div>
+        <span class="pill" id="overallPill">6 個營運中心</span>
+      </div>
+
+      <div class="overview-grid">
+        <div class="overview-left">
+          <div class="gauges" id="gauges"></div>
+          <div class="insights" id="insights"></div>
+        </div>
+        <div class="overview-right">
+          <div class="chart-block">
+            <div class="chart-head">
+              <h3>配合工程完成率</h3>
+              <span>P2=3 / 租賃完成</span>
+            </div>
+            <div class="bars" id="barsEng"></div>
+          </div>
+          <div class="chart-block">
+            <div class="chart-head">
+              <h3>開台完成率</h3>
+              <span>P4 開台 / 建設目標</span>
+            </div>
+            <div class="bars" id="barsOpen"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel table-panel" aria-labelledby="tableTitle">
+      <div class="panel-head table-head">
+        <div>
+          <h2 id="tableTitle">各營運中心進度明細</h2>
+          <p>點擊任一列可更新該中心數據；完成率與合計會自動重算。</p>
+        </div>
+        <div class="table-tools">
+          <label class="switch">
+            <input type="checkbox" id="showExtra" checked />
+            <span aria-hidden="true"></span>
+            顯示括號數量
+          </label>
+        </div>
+      </div>
+
+      <div class="filters" id="filters" role="group" aria-label="營運中心篩選"></div>
+
+      <div class="table-wrap">
+        <table id="progressTable">
+          <thead>
+            <tr class="group-row">
+              <th rowspan="2" class="sticky-col"><button class="sort-btn" type="button" data-sort="name">營運中心 <span class="sort-ind" aria-hidden="true">↕</span></button></th>
+              <th rowspan="2"><button class="sort-btn" type="button" data-sort="target">4G<br />建設目標 <span class="sort-ind" aria-hidden="true">↕</span></button></th>
+              <th rowspan="2">租賃<br />完成</th>
+              <th colspan="4" class="group eng-group">P1 / P2 工程</th>
+              <th rowspan="2">P2=3<br />配合完成</th>
+              <th rowspan="2"><button class="sort-btn" type="button" data-sort="eng">配合工程<br />完成率 <span class="sort-ind" aria-hidden="true">↕</span></button></th>
+              <th colspan="4" class="group open-group">P3 / P4 開台</th>
+              <th rowspan="2"><button class="sort-btn" type="button" data-sort="open">開台<br />完成率 <span class="sort-ind" aria-hidden="true">↕</span></button></th>
+            </tr>
+            <tr class="sub-row">
+              <th>P1 電力配合</th>
+              <th>P2 美化</th>
+              <th>P2 電力配合</th>
+              <th>P2 傳輸測通</th>
+              <th>P3 核數</th>
+              <th>P4 SD_Ready</th>
+              <th>P4 裝機完成</th>
+              <th>P4 開台日期</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+
+      <p class="table-note">
+        ※ 完成率門檻：<span class="dot good" aria-hidden="true"></span>≥95% 良好 ·
+        <span class="dot warn" aria-hidden="true"></span>90–95% 注意 ·
+        <span class="dot bad" aria-hidden="true"></span>&lt;90% 待改善。合計列依加總數計算。
+      </p>
+    </section>
+
+    <section class="panel howto" aria-labelledby="howtoTitle">
+      <div class="howto-icon" aria-hidden="true">✎</div>
+      <div>
+        <h3 id="howtoTitle">怎麼使用？</h3>
+        <p>點擊表格中的營運中心，即可編修建設目標與各階段數量，系統會即時重算完成率並保存在本機瀏覽器。需要與同仁分享時，請使用「匯出 JSON」；列印或存成 PDF 請用「列印 / PDF」。</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div>
+      <p><strong>資料來源</strong>：中心資料統計總表（114 年 4G 站台進度）。</p>
+      <p>計算方式：配合工程完成率 = P2=3 / 租賃完成；開台完成率 = P4 開台日期 / 4G 建設目標。括號內數字為原始表附註數量。</p>
+    </div>
+    <button class="btn btn-text" id="resetBtn" type="button">還原原始資料</button>
+  </footer>
+
+  <div class="modal" id="modal" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <header class="modal-head">
+        <div>
+          <p class="eyebrow">UPDATE PROGRESS</p>
+          <h2 id="modalTitle">更新進度</h2>
+        </div>
+        <button class="icon-btn" type="button" data-close aria-label="關閉">✕</button>
+      </header>
+      <form id="editForm" novalidate>
+        <div class="form-grid" id="formGrid"></div>
+        <div class="form-preview" id="formPreview"></div>
+        <footer class="modal-actions">
+          <button type="button" class="btn btn-text" id="restoreCenter">還原此中心</button>
+          <div class="spacer"></div>
+          <button type="button" class="btn" data-close>取消</button>
+          <button type="submit" class="btn btn-primary">儲存更新</button>
+        </footer>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
